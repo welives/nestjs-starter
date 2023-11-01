@@ -23,6 +23,12 @@
       ],
       "@libs/utils/*": [
         "libs/utils/src/*"
+      ],
+      "@libs/common": [
+        "libs/common/src"
+      ],
+      "@libs/common/*": [
+        "libs/common/src/*"
       ]
     }
   }
