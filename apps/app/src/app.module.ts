@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
-import * as Joi from 'joi'
-import * as winston from 'winston'
+import Joi from 'joi'
+import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { LoggerMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@libs/common'
 
 @Module({
   imports: [
@@ -38,6 +40,20 @@ import 'winston-daily-rotate-file'
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: UnifyExceptionFilter,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL })
+  }
+}

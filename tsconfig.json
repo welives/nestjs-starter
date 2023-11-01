@@ -5,6 +5,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
     "sourceMap": true,
@@ -18,12 +19,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@libs/utils": [
-        "libs/utils/src"
-      ],
-      "@libs/utils/*": [
-        "libs/utils/src/*"
-      ],
       "@libs/common": [
         "libs/common/src"
       ],
