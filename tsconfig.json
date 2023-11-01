@@ -17,6 +17,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@libs/utils": [
+        "libs/utils/src"
+      ],
+      "@libs/utils/*": [
+        "libs/utils/src/*"
+      ]
+    }
   }
 }
