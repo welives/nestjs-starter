@@ -8,15 +8,20 @@ import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { LoggerMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@libs/common'
+import { CacheModule } from '@libs/cache'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}.local`, `.env.${process.env.NODE_ENV}`, '.env.local', '.env'],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
-        APP_HOST: Joi.string().required(),
         APP_PORT: Joi.number().default(3000),
+        REDIS_PORT: Joi.number().default(6379),
+        REDIS_HOST: Joi.string().default('127.0.0.1'),
+        REDIS_USERNAME: Joi.string().default('root'),
+        REDIS_PWD: Joi.string().required(),
       }),
     }),
     WinstonModule.forRoot({
@@ -38,6 +43,7 @@ import { LoggerMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@li
         }),
       ],
     }),
+    CacheModule,
   ],
   controllers: [AppController],
   providers: [

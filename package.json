@@ -29,11 +29,13 @@
     "test:e2e": "jest --config ./apps/app/test/jest-e2e.json"
   },
   "dependencies": {
+    "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "dayjs": "^1.11.10",
+    "ioredis": "^5.3.2",
     "joi": "^17.11.0",
     "nest-winston": "^1.9.4",
     "reflect-metadata": "^0.1.13",
@@ -86,7 +88,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@libs/cache(|/.*)$": "<rootDir>/libs/cache/src/$1"
     }
   }
 }
