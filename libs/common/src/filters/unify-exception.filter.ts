@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
 import { Logger } from 'winston'
 import dayjs from 'dayjs'
+import chalk from 'chalk'
 import Utils from '../utils'
 
 @Catch()
@@ -17,7 +18,7 @@ export class UnifyExceptionFilter implements ExceptionFilter {
       success: false,
       code: undefined,
       message: status >= 500 ? 'Server Error' : 'Client Error',
-      path: request.url,
+      url: request.url,
       timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     }
     if (exception instanceof HttpException) {
@@ -26,6 +27,17 @@ export class UnifyExceptionFilter implements ExceptionFilter {
         res.message && (data.message = res.message)
         res.code && (data.code = res.code)
       }
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`
+${chalk.red('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
+Url: ${request.url}
+Method: ${request.method}
+Authorization: ${request.headers.authorization}
+IP: ${request.ip}
+StatusCode: ${status}
+Message: ${data.message}
+${chalk.red('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}`)
     }
     this.logger.error('exception', {
       status,

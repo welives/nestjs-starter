@@ -6,7 +6,7 @@ import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
-import { LoggerMiddleware, MaintMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@libs/common'
+import { LoggerMiddleware, MaintMiddleware, TransformInterceptor, UnifyExceptionFilter } from '@libs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthGuard } from './guards/auth.guard'
@@ -68,7 +68,7 @@ import { AuthGuard } from './guards/auth.guard'
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ResponseInterceptor,
+      useClass: TransformInterceptor,
     },
     {
       provide: APP_FILTER,
