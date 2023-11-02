@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
@@ -13,6 +14,15 @@ async function bootstrap() {
       transform: true,
     })
   )
+  if (process.env.NODE_ENV !== 'production') {
+    const options = new DocumentBuilder()
+      .setTitle('NestJS-Starter')
+      .setDescription('一个NestJS + TypeScript + PM2 + ESLint + Prettier 的基础项目')
+      .setVersion('1.0')
+      .build()
+    const document = SwaggerModule.createDocument(app, options)
+    SwaggerModule.setup('swagger', app, document)
+  }
   await app.listen(process.env.APP_PORT)
 }
 bootstrap()
