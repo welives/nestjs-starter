@@ -1,14 +1,15 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import Joi from 'joi'
+import { RedisModule } from '@liaoliaots/nestjs-redis'
 import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
 import { LoggerMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@libs/common'
-import { CacheModule } from '@libs/cache'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { AuthGuard } from './guards/auth.guard'
 
 @Module({
   imports: [
@@ -43,11 +44,28 @@ import { CacheModule } from '@libs/cache'
         }),
       ],
     }),
-    CacheModule,
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          config: {
+            host: config.get('REDIS_HOST'),
+            port: config.get('REDIS_PORT'),
+            username: config.get('REDIS_USERNAME'),
+            password: config.get('REDIS_PWD'),
+          },
+        }
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

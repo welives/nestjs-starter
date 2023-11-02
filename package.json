@@ -88,8 +88,7 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
-      "^@libs/cache(|/.*)$": "<rootDir>/libs/cache/src/$1"
+      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1"
     }
   }
 }

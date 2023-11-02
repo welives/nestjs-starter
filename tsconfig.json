@@ -24,12 +24,6 @@
       ],
       "@libs/common/*": [
         "libs/common/src/*"
-      ],
-      "@libs/cache": [
-        "libs/cache/src"
-      ],
-      "@libs/cache/*": [
-        "libs/cache/src/*"
       ]
     }
   }
