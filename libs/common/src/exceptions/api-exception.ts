@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
 
-export class AppException extends HttpException {
+export class ApiException extends HttpException {
   /**
    * @param msg 业务消息
    * @param code 业务码
