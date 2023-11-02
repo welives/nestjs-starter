@@ -6,7 +6,7 @@ import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
-import { LoggerMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@libs/common'
+import { LoggerMiddleware, MaintMiddleware, ResponseInterceptor, UnifyExceptionFilter } from '@libs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthGuard } from './guards/auth.guard'
@@ -78,6 +78,6 @@ import { AuthGuard } from './guards/auth.guard'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL })
+    consumer.apply(MaintMiddleware, LoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL })
   }
 }
