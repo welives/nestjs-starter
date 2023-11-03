@@ -6,11 +6,21 @@ import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
+import { TypeOrmModule } from '@nestjs/typeorm'
 import { LoggerMiddleware, MaintMiddleware, TransformInterceptor, UnifyExceptionFilter } from '@libs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AuthModule } from './auth/auth.module'
+
+// @ts-ignore
+const moduleFiles = require.context('./models', true, /\.(ts|js)$/)
+const models = moduleFiles.keys().reduce((model: any[], modelPath) => {
+  const value = moduleFiles(modelPath)
+  const [entity] = Object.values(value).filter((v) => typeof v === 'function' && v.toString().slice(0, 5) === 'class')
+  // 如果是默认导出的情况,则是 [...model, value.default]
+  return [...model, entity]
+}, [])
 
 @Module({
   imports: [
@@ -26,6 +36,14 @@ import { AuthModule } from './auth/auth.module'
         REDIS_HOST: Joi.string().default('127.0.0.1'),
         REDIS_USERNAME: Joi.string().default('root'),
         REDIS_PWD: Joi.string().required(),
+        MYSQL_URL: Joi.string().required(),
+        MYSQL_HOST: Joi.string().required(),
+        MYSQL_PORT: Joi.number().default(3306),
+        MYSQL_USER: Joi.string().required(),
+        MYSQL_PWD: Joi.string().required(),
+        MYSQL_DBNAME: Joi.string().required(),
+        CHARSET: Joi.string().default('utf8'),
+        TIMEZONE: Joi.string().default('Asia/Shanghai'),
       }),
     }),
     WinstonModule.forRoot({
@@ -58,6 +76,30 @@ import { AuthModule } from './auth/auth.module'
             username: config.get('REDIS_USERNAME'),
             password: config.get('REDIS_PWD'),
           },
+        }
+      },
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const MYSQL_URL = config.get('MYSQL_URL')
+        const typeormCofnig = MYSQL_URL
+          ? { url: MYSQL_URL }
+          : {
+              host: config.get('MYSQL_HOST'),
+              port: config.get('MYSQL_PORT'),
+              username: config.get('MYSQL_USER'),
+              password: config.get('MYSQL_PWD'),
+              database: config.get('MYSQL_DBNAME'),
+            }
+        return {
+          type: 'mysql',
+          ...typeormCofnig,
+          entities: models,
+          charset: config.get('CHARSET'),
+          synchronize: config.get('NODE_ENV') !== 'production' ? false : true,
+          autoLoadEntities: true,
         }
       },
     }),
