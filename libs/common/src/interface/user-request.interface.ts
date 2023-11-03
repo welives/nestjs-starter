@@ -1,9 +1,10 @@
 import { Request } from '@nestjs/common'
 export interface UserRequest extends Request {
   user: {
-    userId: string
+    id: number
+    username: string
+    role: number
     avatar: string
-    nickName: string
     [key: string]: any
   }
 }

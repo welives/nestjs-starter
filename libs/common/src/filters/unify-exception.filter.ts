@@ -16,7 +16,7 @@ export class UnifyExceptionFilter implements ExceptionFilter {
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
     const data = {
       success: false,
-      code: undefined,
+      code: void 0,
       message: status >= 500 ? 'Server Error' : 'Client Error',
       url: request.url,
       timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),

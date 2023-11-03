@@ -9,7 +9,8 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
 import { LoggerMiddleware, MaintMiddleware, TransformInterceptor, UnifyExceptionFilter } from '@libs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { AuthGuard } from './guards/auth.guard'
+import { JwtAuthGuard } from './guards/jwt-auth.guard'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -19,6 +20,8 @@ import { AuthGuard } from './guards/auth.guard'
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
         APP_PORT: Joi.number().default(3000),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRES_IN: Joi.string().default('7d'),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_HOST: Joi.string().default('127.0.0.1'),
         REDIS_USERNAME: Joi.string().default('root'),
@@ -58,13 +61,14 @@ import { AuthGuard } from './guards/auth.guard'
         }
       },
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_INTERCEPTOR,
