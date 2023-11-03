@@ -30,7 +30,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       }
       return true
     } catch (error) {
-      throw new UnauthorizedException('用户信息解析失败，请重新登录！')
+      throw new UnauthorizedException(error.message || '用户信息解析失败，请重新登录！')
     }
   }
 }

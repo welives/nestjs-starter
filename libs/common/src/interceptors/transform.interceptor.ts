@@ -14,7 +14,7 @@ export class TransformInterceptor implements NestInterceptor {
     const now = Date.now()
     return next.handle().pipe(
       map((data) => {
-        if (process.env.NODE_ENV !== 'production') {
+        if (process.env.NODE_ENV !== 'production' && !req.url.includes('swagger')) {
           console.log(`
 ${chalk.green('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
 Url: ${req.url}

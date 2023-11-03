@@ -82,6 +82,9 @@ import { AuthModule } from './auth/auth.module'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(MaintMiddleware, LoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL })
+    consumer
+      .apply(MaintMiddleware, LoggerMiddleware)
+      .exclude({ path: 'swagger/(.*)', method: RequestMethod.ALL })
+      .forRoutes({ path: '*', method: RequestMethod.ALL })
   }
 }

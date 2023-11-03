@@ -28,7 +28,7 @@ export class UnifyExceptionFilter implements ExceptionFilter {
         res.code && (data.code = res.code)
       }
     }
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' && !request.url.includes('swagger')) {
       console.log(`
 ${chalk.red('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
 Url: ${request.url}
