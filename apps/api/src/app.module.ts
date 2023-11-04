@@ -15,11 +15,12 @@ import { AuthModule } from './auth/auth.module'
 
 // @ts-ignore
 const moduleFiles = require.context('./models', true, /\.(ts|js)$/)
-const models = moduleFiles.keys().reduce((model: any[], modelPath) => {
+const models = moduleFiles.keys().reduce((model: any[], modelPath: string) => {
   const value = moduleFiles(modelPath)
-  const [entity] = Object.values(value).filter((v) => typeof v === 'function' && v.toString().slice(0, 5) === 'class')
-  // 如果是默认导出的情况,则是 [...model, value.default]
-  return [...model, entity]
+  // 单个导出时
+  // const [entity] = Object.values(value).filter((v) => typeof v === 'function' && v.toString().slice(0, 5) === 'class')
+  // 默认导出时
+  return [...model, value.default]
 }, [])
 
 @Module({
@@ -34,12 +35,12 @@ const models = moduleFiles.keys().reduce((model: any[], modelPath) => {
         JWT_EXPIRES_IN: Joi.string().default('7d'),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_HOST: Joi.string().default('127.0.0.1'),
-        REDIS_USERNAME: Joi.string().default('root'),
+        REDIS_USER: Joi.string().default('root'),
         REDIS_PWD: Joi.string().required(),
         MYSQL_URL: Joi.string().required(),
         MYSQL_HOST: Joi.string().required(),
         MYSQL_PORT: Joi.number().default(3306),
-        MYSQL_USER: Joi.string().required(),
+        MYSQL_USER: Joi.string().default('root'),
         MYSQL_PWD: Joi.string().required(),
         MYSQL_DBNAME: Joi.string().required(),
         CHARSET: Joi.string().default('utf8'),
@@ -72,7 +73,7 @@ const models = moduleFiles.keys().reduce((model: any[], modelPath) => {
           config: {
             host: config.get('REDIS_HOST'),
             port: config.get('REDIS_PORT'),
-            username: config.get('REDIS_USERNAME'),
+            username: config.get('REDIS_USER'),
             password: config.get('REDIS_PWD'),
           },
         }

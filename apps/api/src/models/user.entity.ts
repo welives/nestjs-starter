@@ -7,7 +7,7 @@ export enum UserStatus {
 }
 
 @Entity({ name: 'user' })
-export class User {
+export default class User {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number
 
@@ -25,6 +25,7 @@ export class User {
 
   @Column({ type: 'tinyint', default: 0, comment: '角色' })
   role: number
+
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.NORMAL, comment: '状态' })
-  status: number
+  status: UserStatus
 }

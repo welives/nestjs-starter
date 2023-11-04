@@ -7,7 +7,7 @@ import ms from 'ms'
 import { InjectEntityManager } from '@nestjs/typeorm'
 import { EntityManager } from 'typeorm'
 import { Utils } from '@libs/common'
-import { User, UserStatus } from '../models/user.entity'
+import User, { UserStatus } from '../models/user.entity'
 
 interface ValidResult {
   type: 'NO_EXIST' | 'FORBIDDEN' | 'INCORRECT' | 'NORMAL'
