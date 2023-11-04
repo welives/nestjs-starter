@@ -4,6 +4,9 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRedis } from '@liaoliaots/nestjs-redis'
 import Redis from 'ioredis'
 import ms from 'ms'
+import { InjectEntityManager } from '@nestjs/typeorm'
+import { EntityManager } from 'typeorm'
+import User, { UserStatus } from '../models/user.entity'
 import { Utils } from '@libs/common'
 
 interface ValidResult {
@@ -16,6 +19,7 @@ interface ValidResult {
 export class AuthService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
+    @InjectEntityManager() private manager: EntityManager,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService
   ) {}
@@ -24,32 +28,23 @@ export class AuthService {
    * @param data
    */
   async validateUser(data: { username: string; password: string }): Promise<ValidResult> {
-    // TODO 查询数据库校验登录用户信息
     console.log('Step 2: 查询数据库校验登录用户信息')
-    const faker = {
-      id: 1,
-      username: 'jandan',
-      role: 0,
-      avatar: '',
-      password: 'ad1b1d9d48755cae4cfc406a888fb097cbf18346abdc85569b971a96b620b528', // 123456
-      salt: 'sycLRIsMcYuhh2ijW5gWFg==',
-      status: 'NORMAL', // NORMAL LOCKED BANNED
-    }
-    if (!faker) {
+    const user = await this.manager.findOneBy(User, { username: data.username })
+    if (!user) {
       return {
         type: 'NO_EXIST',
         message: '用户不存在',
         result: null,
       }
     }
-    if (faker.status !== 'NORMAL') {
+    if (user.status !== UserStatus.NORMAL) {
       return {
         type: 'FORBIDDEN',
         message: '用户已被锁定',
         result: null,
       }
     }
-    const isCorrect = faker.password === Utils.encryptPassword(data.password, faker.salt)
+    const isCorrect = user.password === Utils.encryptPassword(data.password, user.salt)
     if (!isCorrect) {
       return {
         type: 'INCORRECT',
@@ -57,11 +52,11 @@ export class AuthService {
         result: null,
       }
     }
-    const { password, salt, ...result } = faker
+    const { password, salt, ...result } = user
     return {
       type: 'NORMAL',
       message: 'ok',
-      result,
+      result: { ...result, id: user.id.toJSON() },
     }
   }
   /**
