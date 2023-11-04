@@ -64,10 +64,11 @@ MYSQL_PORT: ${chalk.green(process.env.MYSQL_PORT)}
 MYSQL_USER: ${chalk.green(process.env.MYSQL_USER)}
 MYSQL_PWD: ${chalk.green(process.env.MYSQL_PWD)}
 MYSQL_DBNAME: ${chalk.green(process.env.MYSQL_DBNAME)}
+MONGODB_URL: ${chalk.green(process.env.MONGODB_URL)}
 ${chalk.yellow('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Redis配置 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
 REDIS_PORT: ${chalk.green(process.env.REDIS_PORT)}
 REDIS_HOST: ${chalk.green(process.env.REDIS_HOST)}
-REDIS_UERNAME: ${chalk.green(process.env.REDIS_UERNAME)}
+REDIS_USER: ${chalk.green(process.env.REDIS_USER)}
 REDIS_PWD: ${chalk.green(process.env.REDIS_PWD)}
 ${chalk.yellow('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 其他配置 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')}
 CHARSET: ${chalk.green(process.env.CHARSET)}

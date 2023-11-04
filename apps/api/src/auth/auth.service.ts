@@ -19,8 +19,7 @@ interface ValidResult {
 export class AuthService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
-    @InjectEntityManager()
-    private manager: EntityManager,
+    @InjectEntityManager() private manager: EntityManager,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService
   ) {}
