@@ -66,7 +66,6 @@ const models = moduleFiles.keys().reduce((model: any[], modelPath) => {
       ],
     }),
     RedisModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return {
