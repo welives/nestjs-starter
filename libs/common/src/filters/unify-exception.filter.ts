@@ -17,7 +17,7 @@ export class UnifyExceptionFilter implements ExceptionFilter {
     const data = {
       success: false,
       code: void 0,
-      message: status >= 500 ? 'Server Error' : 'Client Error',
+      message: status >= 500 ? exception.message ?? 'Server Error' : 'Client Error',
       url: request.url,
       timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     }

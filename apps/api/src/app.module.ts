@@ -6,17 +6,23 @@ import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
+import { PrismaModule } from 'nestjs-prisma'
 import { LoggerMiddleware, MaintMiddleware, TransformInterceptor, UnifyExceptionFilter } from '@libs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AuthModule } from './auth/auth.module'
 
+const envFilePath =
+  process.env.NODE_ENV === 'production'
+    ? ['.env.production.local', '.env.production']
+    : [`.env.${process.env.NODE_ENV}.local`, '.env.local', '.env']
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.NODE_ENV}.local`, `.env.${process.env.NODE_ENV}`, '.env.local', '.env'],
+      envFilePath,
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
         APP_PORT: Joi.number().default(3000),
@@ -24,8 +30,16 @@ import { AuthModule } from './auth/auth.module'
         JWT_EXPIRES_IN: Joi.string().default('7d'),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_HOST: Joi.string().default('127.0.0.1'),
-        REDIS_USERNAME: Joi.string().default('root'),
+        REDIS_USER: Joi.string().default('root'),
         REDIS_PWD: Joi.string().required(),
+        MYSQL_URL: Joi.string().required(),
+        MYSQL_HOST: Joi.string().required(),
+        MYSQL_PORT: Joi.number().default(3306),
+        MYSQL_USER: Joi.string().default('root'),
+        MYSQL_PWD: Joi.string().required(),
+        MYSQL_DBNAME: Joi.string().required(),
+        CHARSET: Joi.string().default('utf8'),
+        TIMEZONE: Joi.string().default('Asia/Shanghai'),
       }),
     }),
     WinstonModule.forRoot({
@@ -54,8 +68,21 @@ import { AuthModule } from './auth/auth.module'
           config: {
             host: config.get('REDIS_HOST'),
             port: config.get('REDIS_PORT'),
-            username: config.get('REDIS_USERNAME'),
+            username: config.get('REDIS_USER'),
             password: config.get('REDIS_PWD'),
+          },
+        }
+      },
+    }),
+    PrismaModule.forRootAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const NODE_ENV = config.get('NODE_ENV')
+        return {
+          prismaOptions: {
+            log: NODE_ENV === 'production' ? ['error'] : ['info', 'warn', 'error'],
+            datasourceUrl: config.get('MYSQL_URL'),
           },
         }
       },
