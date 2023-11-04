@@ -11,16 +11,16 @@ export default class User {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number
 
-  @Column({ type: 'varchar', length: 50, comment: '用户名' })
+  @Column({ type: 'varchar', comment: '用户名' })
   username: string
 
-  @Column({ type: 'varchar', length: 100, comment: '密码' })
+  @Column({ type: 'varchar', comment: '密码' })
   password: string
 
-  @Column({ type: 'varchar', length: 50, comment: '加密盐' })
+  @Column({ type: 'varchar', comment: '加密盐' })
   salt: string
 
-  @Column({ type: 'varchar', length: 255, default: '', comment: '头像' })
+  @Column({ type: 'varchar', default: '', comment: '头像' })
   avatar: string
 
   @Column({ type: 'tinyint', default: 0, comment: '角色' })
