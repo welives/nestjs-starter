@@ -48,7 +48,6 @@ import { AuthModule } from './auth/auth.module'
       ],
     }),
     RedisModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return {

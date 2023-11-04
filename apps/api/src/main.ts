@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
+import { Utils } from '@libs/common'
 
 async function bootstrap() {
   BigInt.prototype['toJSON'] = function () {
@@ -23,6 +24,8 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options)
     SwaggerModule.setup('swagger', app, document)
   }
-  await app.listen(process.env.APP_PORT)
+  await app.listen(process.env.APP_PORT, () => {
+    Utils.environmentsOutput()
+  })
 }
 bootstrap()
