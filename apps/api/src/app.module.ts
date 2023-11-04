@@ -22,12 +22,16 @@ const models = moduleFiles.keys().reduce((model: any[], modelPath: string) => {
   // 默认导出时
   return [...model, value.default]
 }, [])
+const envFilePath =
+  process.env.NODE_ENV === 'production'
+    ? ['.env.production.local', '.env.production']
+    : [`.env.${process.env.NODE_ENV}.local`, '.env.local', '.env']
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.NODE_ENV}.local`, `.env.${process.env.NODE_ENV}`, '.env.local', '.env'],
+      envFilePath,
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
         APP_PORT: Joi.number().default(3000),
