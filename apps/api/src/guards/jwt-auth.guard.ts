@@ -8,8 +8,8 @@ import { IS_PUBLIC_API, UserRequest } from '@libs/common'
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
-    private readonly reflector: Reflector,
-    @InjectRedis() private readonly redis: Redis
+    @InjectRedis() private readonly redis: Redis,
+    private readonly reflector: Reflector
   ) {
     super()
   }

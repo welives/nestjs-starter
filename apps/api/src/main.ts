@@ -9,6 +9,7 @@ async function bootstrap() {
     return Number(this.toString())
   }
   const app = await NestFactory.create(AppModule)
+  app.enableShutdownHooks()
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // 白名单模式，建议设置，否则不存在于 dto 对象中的键值也会被使用

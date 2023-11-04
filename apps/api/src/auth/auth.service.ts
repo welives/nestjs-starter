@@ -15,9 +15,9 @@ interface ValidResult {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtService: JwtService,
+    @InjectRedis() private readonly redis: Redis,
     private readonly config: ConfigService,
-    @InjectRedis() private readonly redis: Redis
+    private readonly jwtService: JwtService
   ) {}
   /**
    * 校验用户信息
