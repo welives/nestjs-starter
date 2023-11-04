@@ -2,11 +2,13 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { ConfigService } from '@nestjs/config'
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
+import { MongooseModule } from '@nestjs/mongoose'
 import { AuthService } from './auth.service'
 import { AuthController } from './auth.controller'
 import { LocalStrategy } from './local.strategy'
 import { JwtStrategy } from './jwt.strategy'
 import { LoginMiddleware } from '../middlewares/login.middleware'
+import User, { UserSchema } from '../schemas/user.schema'
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { LoginMiddleware } from '../middlewares/login.middleware'
         }
       },
     }),
+    MongooseModule.forFeature([{ name: User.name, collection: 'user', schema: UserSchema }]),
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
