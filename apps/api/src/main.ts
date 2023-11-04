@@ -2,11 +2,15 @@ import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { Utils } from '@libs/common'
+import { Decimal } from '@prisma/client/runtime/library'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   BigInt.prototype['toJSON'] = function () {
     return Number(this.toString())
+  }
+  Decimal.prototype.toJSON = function () {
+    return this.toNumber()
   }
   const app = await NestFactory.create(AppModule)
   app.enableShutdownHooks()
