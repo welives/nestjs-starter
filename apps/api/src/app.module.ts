@@ -6,6 +6,7 @@ import winston from 'winston'
 import { WinstonModule } from 'nest-winston'
 import 'winston-daily-rotate-file'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
+import { PrismaModule } from 'nestjs-prisma'
 import { LoggerMiddleware, MaintMiddleware, TransformInterceptor, UnifyExceptionFilter } from '@libs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -30,6 +31,7 @@ const envFilePath =
         REDIS_HOST: Joi.string().default('127.0.0.1'),
         REDIS_USER: Joi.string().default('root'),
         REDIS_PWD: Joi.string().required(),
+        MONGODB_URL: Joi.string().required(),
       }),
     }),
     WinstonModule.forRoot({
@@ -60,6 +62,19 @@ const envFilePath =
             port: config.get('REDIS_PORT'),
             username: config.get('REDIS_USER'),
             password: config.get('REDIS_PWD'),
+          },
+        }
+      },
+    }),
+    PrismaModule.forRootAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const NODE_ENV = config.get('NODE_ENV')
+        return {
+          prismaOptions: {
+            log: NODE_ENV === 'production' ? ['error'] : ['info', 'warn', 'error'],
+            datasourceUrl: config.get('MONGODB_URL'),
           },
         }
       },
