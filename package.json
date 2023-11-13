@@ -1,16 +1,19 @@
 {
   "name": "nestjs-starter",
   "version": "1.0.0",
-  "description": "一个NestJS + TypeScript + PM2 + ESLint + Prettier 的基础项目",
+  "description": "开箱即用的基于 NestJS + TypeORM + PM2 + TypeScript 的模板",
   "keywords": [
     "NestJS",
-    "typescript",
-    "pm2",
-    "eslint",
-    "prettier",
-    "webpack",
-    "mongodb",
-    "mysql"
+    "TypeORM",
+    "Prisma",
+    "Mongoose",
+    "TypeScript",
+    "PM2",
+    "ESLint",
+    "Prettier",
+    "Webpack",
+    "MongoDB",
+    "MySQL"
   ],
   "author": "welives",
   "license": "MIT",
